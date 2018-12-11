@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=newXLoc\ newYLoc
+comment0.target=Robot(int,\ int)
+comment0.text=\r\n\ constructs\ new\ Robot\ object\r\n\ \r\n\ @param\ newXLoc\ starting\ value\ for\ xLoc\r\n\ @param\ newYLoc\ starting\ value\ for\ yLoc\r\n\ @param\ newTexture\ path\ to\ image\r\n
+comment1.params=
+comment1.target=int\ getHealth()
+comment1.text=\r\n\ returns\ the\ current\ Robot\ object's\ health\r\n\ \r\n\ @return\ current\ Robot\ object's\ health\r\n
+comment2.params=newHealth
+comment2.target=void\ setHealth(int)
+comment2.text=\r\n\ sets\ the\ health\ for\ the\ Robot\ object's\r\n\ \r\n\ @param\ newHealth\ new\ value\ for\ Robot\ object's\ health\r\n
+comment3.params=newHealth
+comment3.target=void\ changeHealth(int)
+comment3.text=\r\n\ adds\ a\ value\ to\ the\ Robot\ object's\ current\ health\r\n\ \r\n\ @param\ newHealth\ value\ added\ to\ Robot\ object's\ current\ health\r\n
+comment4.params=
+comment4.target=java.lang.String\ getDirection()
+comment4.text=\r\n\ returns\ the\ current\ Robot\ object's\ direction\r\n\ \r\n\ @return\ current\ Robot\ object's\ direction\r\n
+comment5.params=newDirection
+comment5.target=void\ setDirection(java.lang.String)
+comment5.text=\r\n\ sets\ the\ Robot\ object's\ direction\r\n\ \r\n\ @param\ newDirection\ new\ value\ for\ Robot\ object's\ direction\r\n
+numComments=6

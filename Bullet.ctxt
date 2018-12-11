@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.params=newXLoc\ newYLoc
+comment0.target=Bullet(int,\ int)
+comment0.text=\r\n\ constructs\ new\ Bullets\ object\r\n\ \r\n\ @param\ newXLoc\ starting\ value\ for\ xLoc\r\n\ @param\ newYLoc\ starting\ value\ for\ yLoc\r\n\ @param\ newTexture\ path\ to\ image\r\n
+comment1.params=
+comment1.target=java.lang.String\ getDirection()
+comment1.text=\r\n\ returns\ the\ current\ Bullet\ object's\ direction\r\n\ \r\n\ @return\ current\ Bullet\ object's\ direction\r\n
+comment2.params=newDirection
+comment2.target=void\ setDirection(java.lang.String)
+comment2.text=\r\n\ sets\ the\ Bullet\ object's\ direction\r\n\ \r\n\ @param\ newDirection\ new\ value\ for\ Bullet\ object's\ direction\r\n
+numComments=3
