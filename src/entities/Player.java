@@ -2,9 +2,11 @@ package entities;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import core.Main;
 import engine.Camera;
+import engine.Input;
 import engine.Model;
 import engine.Shader;
 import engine.Texture;
@@ -67,7 +69,7 @@ public class Player
 		if(animationCounter >= animationTexture.length)
 			animationCounter = 0;
 		shader.bind();
-//		texture.bind(0);
+		texture.bind();
 		animationTexture[animationCounter].bind(0);
 		modelMatrix.translate(position);
 		
@@ -78,14 +80,31 @@ public class Player
 		mesh.render();
 		shader.unBind();		
 //		animationCounter++;
+		
 	}
 	
-	public void update(World world)
+	public void update(World world, Input input)
 	{
-//		System.out.println(World.delta);
-//		if(World.delta != 0 && World.delta % 45 == 0)
 		if(World.moving && world.getTile().getModelMatrix().m30() % 3 == 0)
 			animationCounter++;
+		
+		if(input.isKeyDown(GLFW.GLFW_KEY_SPACE))
+		{
+			if(Bullet.bulletList.isEmpty())
+			{
+				if(facingRight == true)
+					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 + 38, Ground.HEIGHT + 28));
+				else
+					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 - 38, Ground.HEIGHT + 28));
+			}
+			else if(Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= Main.WIDTH/2 + 38 + 25)
+			{
+				if(facingRight == true)
+					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 + 38, Ground.HEIGHT + 28));
+				else
+					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 - 38, Ground.HEIGHT + 28));
+			}
+	}
 	}
 	
 	public static void reflect()
@@ -96,4 +115,8 @@ public class Player
 			modelMatrix.reflect(-1, 0, 0, 0);		
 	}
 	
+	public float getPosition()
+	{
+		return modelMatrix.m30();
+	}
 }
