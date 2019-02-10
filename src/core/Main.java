@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -10,6 +12,7 @@ import engine.Input;
 import engine.Shader;
 import engine.Timer;
 import engine.Window;
+import entities.Bullet;
 import entities.Player;
 import world.Background;
 import world.World;
@@ -116,6 +119,7 @@ public class Main
 		world = new World();
 //		camera.setPosition(new Vector3f(-2*400/2, 0, 0));
 		player = new Player();
+		Bullet.bulletList = new ArrayList<Bullet>();
 	}
 	
 	private static void render()
@@ -123,34 +127,19 @@ public class Main
 		background.render(Shader.backgroundShader, camera);
 		world.render(Shader.groundShader, camera);
 		player.render(Shader.playerShader, camera);
+		Bullet.render(Shader.bulletShader, camera);
 	}
 	
 	private static void update()
 	{
 		world.update(camera, windowInput);
-		player.update(world);
-		//player animation code
-//		if(World.moving)
-//		{
-//			if(Player.facingRight)
-//			{
-//				if(frameTime >= 0.5)
-//					Player.animationCounter++;
-//			}
-//				
-//		}
+		player.update(world, windowInput);
+		
+		for(Bullet b : Bullet.bulletList)
+			b.update();
+		
+		for(int i = 0; i < Bullet.bulletList.size(); i++)
+			if(Bullet.bulletList.get(i).modelMatrix.m30() > WIDTH + 30 || Bullet.bulletList.get(i).modelMatrix.m30() < -30)
+				Bullet.bulletList.remove(i);
 	}
-	
-	private static void animatePlayer()
-	{
-		if(World.moving)
-		{
-			if(Player.facingRight)
-			{
-				Player.animationCounter++;
-			}
-				
-		}
-	}
-
 }
