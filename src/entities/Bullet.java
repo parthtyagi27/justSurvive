@@ -16,13 +16,13 @@ public class Bullet
 {
 	
 	public static ArrayList<Bullet> bulletList;
-
+	public static float bulletDistance = 30;
 	
 	private Model mesh;
 	private static Texture texture = new Texture("/res/bullet.png");
 	
 	public Matrix4f modelMatrix;
-	private Vector3f position;
+	public Vector3f position;
 	
 	private static float y = Ground.HEIGHT + 28;
 	private float x;
@@ -99,10 +99,10 @@ public class Bullet
 	{
 		if(position.x() == 0)
 		{
-		if(Player.facingRight)
-			position.x = 1;
-		else
-			position.x = -1;
+			if(Player.facingRight)
+				position.x = 1;
+			else
+				position.x = -1;
 		}
 	}
 }

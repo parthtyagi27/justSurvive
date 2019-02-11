@@ -96,12 +96,12 @@ public class Player
 			}
 			else if(facingRight)
 			{
-				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= Main.WIDTH/2 + 38 + 25)
+				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= Main.WIDTH/2 + 38 + Bullet.bulletDistance || Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() == -1)
 					Bullet.createBullet();
 			}
 			else if(!facingRight)
 			{
-				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() <= Main.WIDTH/2 - (38 + 25))
+				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() <= Main.WIDTH/2 - (38 + Bullet.bulletDistance)|| Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() == 1)
 					Bullet.createBullet();
 			}
 	}
