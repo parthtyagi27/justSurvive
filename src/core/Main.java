@@ -13,6 +13,7 @@ import engine.Shader;
 import engine.Timer;
 import engine.Window;
 import entities.Bullet;
+import entities.Enemy;
 import entities.Player;
 import world.Background;
 import world.World;
@@ -30,6 +31,8 @@ public class Main
 	private static Background background;
 	private static World world;
 	private static Player player;
+	
+	private static Enemy test;
 	
 	public static void main(String[] args)
 	{
@@ -120,6 +123,8 @@ public class Main
 //		camera.setPosition(new Vector3f(-2*400/2, 0, 0));
 		player = new Player();
 		Bullet.bulletList = new ArrayList<Bullet>();
+		Enemy.enemyList = new ArrayList<Enemy>();
+		test = new Enemy();
 	}
 	
 	private static void render()
@@ -128,6 +133,7 @@ public class Main
 		world.render(Shader.groundShader, camera);
 		player.render(Shader.playerShader, camera);
 		Bullet.render(Shader.bulletShader, camera);
+		test.render(Shader.playerShader, camera);
 	}
 	
 	private static void update()
@@ -141,5 +147,7 @@ public class Main
 		for(int i = 0; i < Bullet.bulletList.size(); i++)
 			if(Bullet.bulletList.get(i).modelMatrix.m30() > WIDTH + 30 || Bullet.bulletList.get(i).modelMatrix.m30() < -30)
 				Bullet.bulletList.remove(i);
+		
+		test.update();
 	}
 }
