@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import core.Main;
 import engine.Camera;
 import engine.Model;
 import engine.Shader;
 import engine.Texture;
+import world.Ground;
 
 public class Bullet
 {
@@ -22,7 +24,8 @@ public class Bullet
 	public Matrix4f modelMatrix;
 	private Vector3f position;
 	
-	private float x, y;
+	private static float y = Ground.HEIGHT + 28;
+	private float x;
 	private float xSpeed;
 	
 	public Bullet(float x, float y)
@@ -55,6 +58,14 @@ public class Bullet
 		
 		modelMatrix = new Matrix4f().translate(x, y, 0).scale(3);
 		position = new Vector3f();
+	}
+	
+	public static void createBullet()
+	{
+		if(Player.facingRight)
+			bulletList.add(new Bullet(Main.WIDTH/2 + 38,y));
+		else
+			bulletList.add(new Bullet(Main.WIDTH/2 - 38, y));
 	}
 	
 	private void renderBullet(Shader shader, Camera camera)

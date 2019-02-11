@@ -92,17 +92,17 @@ public class Player
 		{
 			if(Bullet.bulletList.isEmpty())
 			{
-				if(facingRight == true)
-					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 + 38, Ground.HEIGHT + 28));
-				else
-					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 - 38, Ground.HEIGHT + 28));
+				Bullet.createBullet();			
 			}
-			else if(Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= Main.WIDTH/2 + 38 + 25)
+			else if(facingRight)
 			{
-				if(facingRight == true)
-					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 + 38, Ground.HEIGHT + 28));
-				else
-					Bullet.bulletList.add(new Bullet(Main.WIDTH/2 - 38, Ground.HEIGHT + 28));
+				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= Main.WIDTH/2 + 38 + 25)
+					Bullet.createBullet();
+			}
+			else if(!facingRight)
+			{
+				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() <= Main.WIDTH/2 - (38 + 25))
+					Bullet.createBullet();
 			}
 	}
 	}
