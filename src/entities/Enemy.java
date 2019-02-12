@@ -29,10 +29,9 @@ public class Enemy
 	
 	public static boolean facingRight;
 	public static int animationCounter = 0;
-	private static Random r;
-	private int movement;
+	private static Random r = new Random();
 	
-	public Enemy()
+	public Enemy(float x, float y)
 	{
 		float[] verticies = new float[]
 				{
@@ -68,26 +67,25 @@ public class Enemy
 		
 		mesh = new Model(verticies, textures, indicies);
 		
-		modelMatrix = new Matrix4f();
+		modelMatrix = new Matrix4f().translate(x, y, 0).scale(4);
 		position = new Vector3f();
 		
 		health = 100;
 		
-		r = new Random();
 		if(r.nextInt(2) == 0)
 		{
 			facingRight = true;
 			reflect();
-			modelMatrix.translate(0, Ground.HEIGHT + 40, 0).scale(4);
+//			modelMatrix.translate(0, Ground.HEIGHT + 40, 0).scale(4);
 		}
 		else
 		{
 			facingRight = false;
-			modelMatrix.translate(Main.WIDTH, Ground.HEIGHT + 40, 0).scale(4);
+//			modelMatrix.translate(Main.WIDTH, Ground.HEIGHT + 40, 0).scale(4);
 		}
 	}
 
-	public void render(Shader shader, Camera camera)
+	public void renderEnemy(Shader shader, Camera camera)
 	{
 		if(animationCounter >= animationTexture.length)
 			animationCounter = 0;
@@ -120,6 +118,17 @@ public class Enemy
 				position.x = 0.25f;
 		}
 		
+	}
+	
+	public static void createEnemy()
+	{
+		enemyList.add(new Enemy(r.nextInt(350), Ground.HEIGHT + 40));
+	}
+	
+	public static void render(Shader shader, Camera camera)
+	{
+		for(Enemy e : enemyList)
+			e.renderEnemy(shader, camera);
 	}
 	
 	private void reflect()
