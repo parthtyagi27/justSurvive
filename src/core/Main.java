@@ -32,7 +32,6 @@ public class Main
 	private static World world;
 	private static Player player;
 	
-	private static Enemy test;
 	
 	public static void main(String[] args)
 	{
@@ -91,6 +90,7 @@ public class Main
 					frameTime = 0;
 					System.out.println("FPS: " + frames);
 					frames = 0;
+					Enemy.createEnemy();
 				}
 			}
 			
@@ -124,7 +124,6 @@ public class Main
 		player = new Player();
 		Bullet.bulletList = new ArrayList<Bullet>();
 		Enemy.enemyList = new ArrayList<Enemy>();
-		test = new Enemy();
 	}
 	
 	private static void render()
@@ -133,7 +132,7 @@ public class Main
 		world.render(Shader.groundShader, camera);
 		player.render(Shader.playerShader, camera);
 		Bullet.render(Shader.bulletShader, camera);
-		test.render(Shader.playerShader, camera);
+		Enemy.render(Shader.enemyShader, camera);
 	}
 	
 	private static void update()
@@ -148,6 +147,9 @@ public class Main
 			if(Bullet.bulletList.get(i).modelMatrix.m30() > WIDTH + 30 || Bullet.bulletList.get(i).modelMatrix.m30() < -30)
 				Bullet.bulletList.remove(i);
 		
-		test.update();
+		
+		
+		for(Enemy e : Enemy.enemyList)
+			e.update();
 	}
 }
