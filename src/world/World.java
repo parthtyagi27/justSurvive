@@ -10,9 +10,10 @@ import entities.Player;
 public class World
 {
 	private Ground tile;
+//	private Tile[] tileArray;
 	private float xSpeed = 1f;
 	public static boolean moving = false;
-
+	public static boolean canMoveRight = true, canMoveLeft = true;;
 	
 	public World()
 	{
@@ -26,7 +27,29 @@ public class World
 	
 	public void update(Camera camera, Input input)
 	{
-		if(input.isKeyDown(GLFW.GLFW_KEY_RIGHT))
+		float groundPosition = tile.getModelMatrix().m30();
+		if(groundPosition <= -1326)
+		{
+			canMoveRight = false;
+			canMoveLeft = true;
+			tile.translate(0, 0, 0);
+			moving = false;
+			Player.animationCounter = 0;
+		}
+		else if(groundPosition >= 228)
+		{
+			canMoveLeft = false;
+			canMoveRight = true;
+			tile.translate(0, 0, 0);
+			moving = false;
+			Player.animationCounter = 0;
+		}else
+		{
+			canMoveLeft = true;
+			canMoveRight = true;
+		}
+		
+		if(input.isKeyDown(GLFW.GLFW_KEY_RIGHT) && canMoveRight)
 		{
 			tile.translate(-xSpeed,  0, 0);
 			moving = true;
@@ -36,7 +59,7 @@ public class World
 				Player.reflect();
 			}
 		}
-		else if(input.isKeyDown(GLFW.GLFW_KEY_LEFT))
+		else if(input.isKeyDown(GLFW.GLFW_KEY_LEFT) && canMoveLeft)
 		{
 			tile.translate(xSpeed, 0, 0);
 			moving = true;
@@ -45,20 +68,17 @@ public class World
 				Player.facingRight = false;
 				Player.reflect();
 			}
-		}
-		else
+		}else
 		{
 			tile.translate(0, 0, 0);
 			moving = false;
 			Player.animationCounter = 0;
-//			delta = tile.getModelMatrix().m30() - init;
-//			System.out.println(delta);
 		}
-		System.out.println(tile.getModelMatrix().m30());
 	}
 	
 	public Ground getTile()
 	{
 		return tile;
 	}
+	
 }
