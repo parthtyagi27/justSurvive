@@ -1,7 +1,6 @@
 package world;
 
-import org.joml.Matrix4f;
-
+import core.Main;
 import engine.Camera;
 import engine.Model;
 import engine.Shader;
@@ -12,18 +11,16 @@ public class Background
 	
 	private Model model;
 	private Texture texture;
-	private Matrix4f scale;
 	
 	public Background()
 	{
-		float[] verticies = new float[]
-				{
-					-100f, 100f, 0, //Top left     1
-					100f, 100f, 0,	//Top Right    2
-					100f, -100f, 0, //Bottom Right 3
-					-100f, -100f,0, //Bottom Left  4
-					
-				};
+		float[] verticies = 
+		{
+				0f, Main.HEIGHT, 0f,		//Top Left 1
+				Main.WIDTH, Main.HEIGHT, 0f,//Top Right 2
+				Main.WIDTH,  0f, 0f,		//Bottom Right 3
+				0f, 0f, 0f					//Bottom Left 4
+		};
 		
 		float[] textures = new float[]
 		{
@@ -42,20 +39,15 @@ public class Background
 		
 		texture = new Texture("/res/background.png");
 		model = new Model(verticies, textures, indicies);
-		scale = new Matrix4f().scale(10);
 	}
 	
 	public void render(Shader shader, Camera camera)
 	{
 		shader.bind();
 		texture.bind(0);
-		Matrix4f target = new Matrix4f();
-		Matrix4f position = new Matrix4f().translate(0,0, 0);
-		camera.getProjection().mul(scale, target);
-		target.mul(position);
 		
 		shader.setUniform("sampler", 0);
-		shader.setUniform("projection", target);
+		shader.setUniform("projection", camera.getProjection());
 		model.render();
 		shader.unBind();
 	}

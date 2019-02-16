@@ -1,32 +1,81 @@
 package world;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+import engine.Camera;
+import engine.Model;
+import engine.Shader;
+import engine.Texture;
+
 public class Tile
 {
 	
-	public static Tile tiles[] = new Tile[8];
-	public static final Tile test = new Tile((byte) 0, "/res/dirtGrass");
+	private Texture texture;
+	private Model mesh;
+	private Matrix4f modelMatrix;
+	private Vector3f position;
 	
-	private byte id;
-	private String texture;
-	
-	public Tile(byte id, String texture)
+	public Tile(float x)
 	{
-		this.id = id;
-		this.texture = texture;
-		if(tiles[id] != null)
-			throw new IllegalStateException("Tiles at [" + id + "] is already being used");
-		tiles[id] = this;
-	}
-
-	public byte getId()
-	{
-		return id;
-	}
-
-	public String getTexture()
-	{
-		return texture;
+		float vertices[] = 
+		{
+			0, 100f, 0.1f,
+			100, 100f, 0.1f,
+			100, 0f, 0.1f,
+			0, 0f, 0.1f,
+		};
+		
+		float[] textures = new float[]
+			{
+				0,0,
+				1,0,
+				1,1,
+				0,1,		
+			};
+				
+		int[] indicies = new int[]
+		{
+			0,1,2,
+			2,3,0
+		};
+		
+		texture = new Texture("/res/dirtGrass.png");
+		mesh = new Model(vertices, textures, indicies);
+		
+		position = new Vector3f();
+		modelMatrix = new Matrix4f().scale(2);
+		modelMatrix.m30(x);
 	}
 	
+	public void render(Shader shader, Camera camera)
+	{
+		shader.bind();
+		texture.bind(0);
+		
+		
+		shader.setUniform("sampler", 0);
+		shader.setUniform("projection", camera.getProjection());
+		shader.setUniform("model", modelMatrix);
+		
+		mesh.render();
+		shader.unBind();
+	}
 	
+	public Matrix4f getModelMatrix()
+	{
+		return modelMatrix;
+	}
+	
+	public void translate(float x, float y, float z)
+	{
+		position.x = x;
+		position.y = y;
+		position.z = z;
+	}
+	
+	public void update()
+	{
+		modelMatrix.translate(position);
+	}
 }

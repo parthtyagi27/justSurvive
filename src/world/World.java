@@ -10,7 +10,6 @@ import entities.Player;
 public class World
 {
 	private Ground tile;
-//	private Tile[] tileArray;
 	private float xSpeed = 1f;
 	public static boolean moving = false;
 	public static boolean canMoveRight = true, canMoveLeft = true;;
@@ -18,7 +17,7 @@ public class World
 	public World()
 	{
 		tile = new Ground();
-		tile.getModelMatrix().translate(-150, 0, 0);
+		tile.getModelMatrix().translate(-200, 0, 0);
 	}
 	public void render(Shader shader, Camera camera)
 	{
