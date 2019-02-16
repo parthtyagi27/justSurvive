@@ -6,12 +6,12 @@ import org.lwjgl.glfw.GLFW;
 
 import core.Main;
 import engine.Camera;
+import engine.Handler;
 import engine.Input;
 import engine.Model;
 import engine.Shader;
 import engine.Texture;
 import world.Ground;
-import world.World;
 
 public class Player
 {
@@ -19,8 +19,9 @@ public class Player
 	private Texture texture;
 	private Texture[] animationTexture;
 	
-	private Vector3f position;
-	private static Matrix4f modelMatrix;
+	public static Vector3f position;
+	public static Matrix4f modelMatrix;
+	
 	public static boolean facingRight = true;
 	public static int animationCounter = 0;
 	
@@ -71,7 +72,7 @@ public class Player
 		shader.bind();
 		texture.bind();
 		animationTexture[animationCounter].bind(0);
-		modelMatrix.translate(position);
+//		modelMatrix.translate(position);
 		
 		shader.setUniform("sampler", 0);
 		shader.setUniform("projection", camera.getProjection());
@@ -83,12 +84,71 @@ public class Player
 		
 	}
 	
-	public void update(World world, Input input)
+	public void update(Input input)
 	{
-		if(World.moving && world.getTile().getModelMatrix().m30() % 3 == 0)
-			animationCounter++;
+//
+//		if(UnitManager.isMoving && (UnitManager.bg[0].getX() % 5 == 0 || UnitManager.bg[1].getX() % 5 == 0 || UnitManager.bg[2].getX() % 5 == 0))
+//		{
+//			animationCounter++;
+//		}else
+//		{
+//			System.out.println(UnitManager.isMoving);
+//			animationCounter = 4;
+//		}
 		
-		if(input.isKeyDown(GLFW.GLFW_KEY_SPACE))
+		if(animationCounter > animationTexture.length)
+		{
+			animationCounter = 0;
+		}
+		//Camera moving player code
+//		if(input.isKeyDown(GLFW.GLFW_KEY_D))
+//		{
+//			if(!facingRight)
+//			{
+//				facingRight = true;
+//				reflect();				
+//			}
+//			position.x = 1;
+//		}
+//		else if(input.isKeyDown(GLFW.GLFW_KEY_A))
+//		{
+//			if(facingRight)
+//			{								
+//				facingRight = false;
+//				reflect();
+//				System.out.println("reflected");
+//			}
+//			position.x = 1;
+//		}
+//		else
+//		{
+//			position.x = 0;
+//			animationCounter = 0;
+//		}
+		
+		if(Handler.isKeyDown(GLFW.GLFW_KEY_W) && position.y >= 0)
+		{
+			if(modelMatrix.m31() < Ground.HEIGHT + 150 && position.y <= 2)
+				accelerateY(0.2f, 1.2f);
+			else
+				accelerateY(0.25f, -1.2f);
+		}
+		else
+		{
+			if(modelMatrix.m31() > Ground.HEIGHT + 40)
+			{
+//				if(position.y > 0)
+					accelerateY(0.25f, -1.2f);
+			}
+			else if(modelMatrix.m31() < Ground.HEIGHT + 40)
+			{
+				modelMatrix.m31(Ground.HEIGHT + 40);
+				position.y = 0;
+			}
+		}
+	
+	
+		if(Handler.isKeyDown(GLFW.GLFW_KEY_SPACE))
 		{
 			if(Bullet.bulletList.isEmpty())
 			{
@@ -96,15 +156,29 @@ public class Player
 			}
 			else if(facingRight)
 			{
-				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= Main.WIDTH/2 + 38 + Bullet.bulletDistance || Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() == -1)
+				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() >= modelMatrix.m30() + 38 + Bullet.bulletDistance || Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() <= -0.5f)
 					Bullet.createBullet();
 			}
 			else if(!facingRight)
 			{
-				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() <= Main.WIDTH/2 - (38 + Bullet.bulletDistance)|| Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() == 1)
+				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() <= modelMatrix.m30() - (38 + Bullet.bulletDistance)|| Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() >= 0.5f)
 					Bullet.createBullet();
 			}
+		}
 	}
+	
+	private void accelerateY(float acc, float bound)
+	{
+		if(bound > 0)
+		{
+			if(position.y <= bound)
+				position.y += acc;
+		}
+		else if(bound < 0)
+		{
+			if(position.y > bound)
+				position.y -=2* acc;
+		}
 	}
 	
 	public static void reflect()
@@ -112,7 +186,9 @@ public class Player
 		if(facingRight == false)
 			modelMatrix.reflect(1, 0, 0, 0);		
 		else if(facingRight == true)
-			modelMatrix.reflect(-1, 0, 0, 0);		
+			modelMatrix.reflect(-1, 0, 0, 0);	
+		
+//		modelMatrix.m30(x);
 	}
 	
 	public float getPosition()

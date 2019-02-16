@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import core.Main;
 import engine.Camera;
 import engine.Model;
 import engine.Shader;
 import engine.Texture;
-import world.Ground;
 
 public class Bullet
 {
@@ -24,9 +22,7 @@ public class Bullet
 	public Matrix4f modelMatrix;
 	public Vector3f position;
 	
-	private static float y = Ground.HEIGHT + 28;
-	private float x;
-	private float xSpeed;
+
 	
 	public Bullet(float x, float y)
 	{
@@ -63,9 +59,9 @@ public class Bullet
 	public static void createBullet()
 	{
 		if(Player.facingRight)
-			bulletList.add(new Bullet(Main.WIDTH/2 + 38,y));
+			bulletList.add(new Bullet(Player.modelMatrix.m30() + 45, Player.modelMatrix.m31() - 12));
 		else
-			bulletList.add(new Bullet(Main.WIDTH/2 - 38, y));
+			bulletList.add(new Bullet(Player.modelMatrix.m30() - 45, Player.modelMatrix.m31() - 12));
 	}
 	
 	private void renderBullet(Shader shader, Camera camera)
@@ -95,14 +91,41 @@ public class Bullet
 		return modelMatrix.m30();
 	}
 	
+	public void accelerateX(float acc, float bound)
+	{
+		if(bound > 0)
+		{
+			if(position.x <= bound)
+				position.x += acc;
+		}else if(bound < 0)
+		{
+			if(position.x > bound)
+				position.x -= acc;
+		}
+	}
+	
 	public void update()
 	{
 		if(position.x() == 0)
 		{
 			if(Player.facingRight)
-				position.x = 1;
+				position.x = 0.5f;
 			else
-				position.x = -1;
+				position.x = -0.5f;
+		}else
+		{
+			if(position.x() > 0)
+				accelerateX(0.25f, 2f);
+			else if(position.x() < 0)
+				accelerateX(0.25f, -2f);
 		}
+//		}else 
+//		{
+//			if(Player.facingRight)
+//				position.x += 0.02f;
+//			else
+//				position.x -= 0.02f;
+//		}
+		
 	}
 }

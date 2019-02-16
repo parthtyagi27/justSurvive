@@ -6,7 +6,6 @@ import java.util.Random;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import core.Main;
 import engine.Camera;
 import engine.Model;
 import engine.Shader;
@@ -72,17 +71,19 @@ public class Enemy
 		
 		health = 100;
 		
-		if(r.nextInt(2) == 0)
-		{
-			facingRight = true;
-			reflect();
-//			modelMatrix.translate(0, Ground.HEIGHT + 40, 0).scale(4);
-		}
-		else
-		{
-			facingRight = false;
-//			modelMatrix.translate(Main.WIDTH, Ground.HEIGHT + 40, 0).scale(4);
-		}
+		facingRight = r.nextBoolean();
+		
+//		if(r.nextInt(2) == 0)
+//		{
+//			facingRight = true;
+//			reflect();
+////			modelMatrix.translate(0, Ground.HEIGHT + 40, 0).scale(4);
+//		}
+//		else
+//		{
+//			facingRight = false;
+////			modelMatrix.translate(Main.WIDTH, Ground.HEIGHT + 40, 0).scale(4);
+//		}
 	}
 
 	public void renderEnemy(Shader shader, Camera camera)
@@ -106,23 +107,32 @@ public class Enemy
 	{
 		if(health > 0)
 		{
-			if(animationCounter == animationTexture.length)
-				animationCounter = 0;
+			if(modelMatrix.m30() > 228)
+			{
+				facingRight = true;
+				reflect();
+			}else if(modelMatrix.m30() < -1326)
+			{
+				facingRight = false;
+				reflect();
+			}
 			if(!facingRight)
 				position.x = -0.25f;
+			else
+				position.x = 0.25f;
 			
 			if(modelMatrix.m30() % 10 == 0)
 				animationCounter++;
+			if(animationCounter == animationTexture.length)
+				animationCounter = 0;
 			
-			if(facingRight)
-				position.x = 0.25f;
 		}
 		
 	}
 	
 	public static void createEnemy()
 	{
-		enemyList.add(new Enemy(r.nextInt(350), Ground.HEIGHT + 40));
+		enemyList.add(new Enemy(r.nextInt(450), Ground.HEIGHT + 40));
 	}
 	
 	public static void render(Shader shader, Camera camera)
@@ -134,9 +144,9 @@ public class Enemy
 	private void reflect()
 	{
 		if(facingRight == false)
-			modelMatrix.reflect(1, 0, 0, 0);		
-		else if(facingRight == true)
 			modelMatrix.reflect(-1, 0, 0, 0);		
+		else if(facingRight == true)
+			modelMatrix.reflect(1, 0, 0, 0);		
 	}
 
 }
