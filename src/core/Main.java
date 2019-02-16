@@ -16,7 +16,7 @@ import entities.Bullet;
 import entities.Enemy;
 import entities.Player;
 import world.Background;
-import world.World;
+import world.UnitManager;
 
 public class Main
 {
@@ -29,8 +29,10 @@ public class Main
 	
 	private static Camera camera;
 	private static Background background;
-	private static World world;
-	private static Player player;
+//	private static World world;
+	public static Player player;
+	
+	private static UnitManager uManager;
 	
 	
 	public static void main(String[] args)
@@ -46,6 +48,9 @@ public class Main
 		//Get Ready to render
 		GL.createCapabilities();
 		System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+		System.out.println("Welcome to the Just Survive!"+ System.getProperty("line.separator") +
+		"OpenGL implementation written by Parth Tyagi" + System.getProperty("line.separator") +
+		"Original game design by Al Bondad");
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -60,6 +65,8 @@ public class Main
 		frameTime = 0;
 		unprocessedTime = 0;
 		int frames = 0;
+		
+//		Enemy.createEnemy();
 		
 		while(window.isClosed() == false)
 		{
@@ -90,7 +97,8 @@ public class Main
 					frameTime = 0;
 					System.out.println("FPS: " + frames);
 					frames = 0;
-					Enemy.createEnemy();
+//					if(Enemy.enemyList.size() <= 3)
+//						Enemy.createEnemy();
 				}
 			}
 			
@@ -119,17 +127,21 @@ public class Main
 		camera = new Camera(WIDTH, HEIGHT);
 		Shader.loadShaders();
 		background = new Background();
-		world = new World();
+//		world = new World();
 //		camera.setPosition(new Vector3f(-2*400/2, 0, 0));
 		player = new Player();
 		Bullet.bulletList = new ArrayList<Bullet>();
 		Enemy.enemyList = new ArrayList<Enemy>();
+		
+//		unit = new Unit(Shader.backgroundShader, Shader.groundShader, camera);
+		uManager = new UnitManager(Shader.groundShader, camera);
 	}
 	
 	private static void render()
 	{	
 		background.render(Shader.backgroundShader, camera);
-		world.render(Shader.groundShader, camera);
+//		world.render(Shader.groundShader, camera);
+		uManager.render();
 		player.render(Shader.playerShader, camera);
 		Bullet.render(Shader.bulletShader, camera);
 		Enemy.render(Shader.enemyShader, camera);
@@ -137,19 +149,36 @@ public class Main
 	
 	private static void update()
 	{
-		world.update(camera, windowInput);
-		player.update(world, windowInput);
-		
+
 		for(Bullet b : Bullet.bulletList)
 			b.update();
 		
+		uManager.update(windowInput);
+		player.update(windowInput);
+//		world.update(camera, windowInput);
+//		System.out.println(Player.modelMatrix.m30());
+		
 		for(int i = 0; i < Bullet.bulletList.size(); i++)
-			if(Bullet.bulletList.get(i).modelMatrix.m30() > WIDTH + 30 || Bullet.bulletList.get(i).modelMatrix.m30() < -30)
+			if(Bullet.bulletList.get(i).modelMatrix.m30() > 800 || Bullet.bulletList.get(i).modelMatrix.m30() < -1326)
 				Bullet.bulletList.remove(i);
-		
-		
 		
 		for(Enemy e : Enemy.enemyList)
 			e.update();
+		
+//		if(windowInput.isKeyDown(GLFW.GLFW_KEY_D))
+//		{
+////			if(Player.modelMatrix.m30() % 400 == 0)
+//				camera.addPosition(new Vector3f(-4, 0, 0));
+//			Camera.cameraMoving = true;
+//		}else if(windowInput.isKeyDown(GLFW.GLFW_KEY_A))
+//		{
+//			camera.addPosition(new Vector3f(4, 0, 0));
+//			Camera.cameraMoving = true;
+//		}else
+//		{
+//			Camera.cameraMoving = false;
+//		}
+		
+//		System.out.println(camera.getPosition().toString());
 	}
 }
