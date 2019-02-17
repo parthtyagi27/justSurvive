@@ -31,7 +31,6 @@ public class Main
 	private static Background background;
 //	private static World world;
 	public static Player player;
-	private static Enemy e;
 	
 	private static UnitManager uManager;
 	
@@ -98,6 +97,7 @@ public class Main
 					frameTime = 0;
 					System.out.println("FPS: " + frames);
 					frames = 0;
+					perSecondUpdate();
 //					if(Enemy.enemyList.size() <= 3)
 //						Enemy.createEnemy();
 				}
@@ -147,6 +147,17 @@ public class Main
 		player.render(Shader.playerShader, camera);
 		Bullet.render(Shader.bulletShader, camera);
 		Enemy.render(Shader.enemyShader, camera);
+	}
+	
+	private static void perSecondUpdate()
+	{
+		for(Enemy e : Enemy.enemyList)
+		{
+			if(e.isTouchingPlayer)
+				Player.health -= 10;
+		}
+		
+		System.out.println("Player Health = " + Player.health);
 	}
 	
 	private static void update()
