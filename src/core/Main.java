@@ -31,6 +31,7 @@ public class Main
 	private static Background background;
 //	private static World world;
 	public static Player player;
+	private static Enemy e;
 	
 	private static UnitManager uManager;
 	
@@ -135,6 +136,7 @@ public class Main
 		
 //		unit = new Unit(Shader.backgroundShader, Shader.groundShader, camera);
 		uManager = new UnitManager(Shader.groundShader, camera);
+		Enemy.createEnemy();
 	}
 	
 	private static void render()
