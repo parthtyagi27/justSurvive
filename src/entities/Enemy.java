@@ -21,7 +21,7 @@ public class Enemy
 	private Texture texture;
 	private Texture[] animationTexture;
 	private Vector3f position;
-	private Matrix4f modelMatrix;
+	public Matrix4f modelMatrix;
 	public boolean isTouchingPlayer = false;
 	
 	public float health;
@@ -131,7 +131,7 @@ public class Enemy
 	
 	public static void createEnemy()
 	{
-		Enemy e = new Enemy(r.nextInt(450), Ground.HEIGHT + 40);
+		Enemy e = new Enemy(100, Ground.HEIGHT + 40);
 		if(e.modelMatrix.m30() > Player.modelMatrix.m30() - 40)
 		{
 			e.facingRight = false;

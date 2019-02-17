@@ -21,7 +21,7 @@ public class Bullet
 	
 	public Matrix4f modelMatrix;
 	public Vector3f position;
-	
+	public static final float bulletDamage = 15;
 
 	
 	public Bullet(float x, float y)
@@ -127,5 +127,7 @@ public class Bullet
 //				position.x -= 0.02f;
 //		}
 		
+		
 	}
+	
 }
