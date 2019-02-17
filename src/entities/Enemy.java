@@ -20,14 +20,15 @@ public class Enemy
 	private Model mesh;
 	private Texture texture;
 	private Texture[] animationTexture;
-	
-	private float health;
-	
 	private Vector3f position;
 	private Matrix4f modelMatrix;
 	
-	public static boolean facingRight;
-	public static int animationCounter = 0;
+	private float health;
+	private static final float xSpeed = 0.5f;
+	
+	
+	public boolean facingRight;
+	public int animationCounter = 0;
 	private static Random r = new Random();
 	
 	public Enemy(float x, float y)
@@ -71,7 +72,6 @@ public class Enemy
 		
 		health = 100;
 		
-		facingRight = r.nextBoolean();
 		
 //		if(r.nextInt(2) == 0)
 //		{
@@ -93,7 +93,7 @@ public class Enemy
 		shader.bind();
 		texture.bind();
 		animationTexture[animationCounter].bind(0);
-		modelMatrix.translate(position);
+//		modelMatrix.translate(position);
 		
 		shader.setUniform("sampler", 0);
 		shader.setUniform("projection", camera.getProjection());
@@ -107,32 +107,51 @@ public class Enemy
 	{
 		if(health > 0)
 		{
-			if(modelMatrix.m30() > 228)
+			if(modelMatrix.m30() == Player.modelMatrix.m30())
+				position.x = 0;
+			else 
 			{
-				facingRight = true;
-				reflect();
-			}else if(modelMatrix.m30() < -1326)
+			if(modelMatrix.m30() > Player.modelMatrix.m30() && facingRight == true)
 			{
 				facingRight = false;
 				reflect();
+//				position.x = -xSpeed;
 			}
-			if(!facingRight)
-				position.x = -0.25f;
+			else if(modelMatrix.m30() < Player.modelMatrix.m30() && facingRight == false)
+			{
+				facingRight = true;
+				reflect();
+//				position.x = xSpeed;
+			}
+			else if(modelMatrix.m30() == Player.modelMatrix.m30())
+				position.x = 0;
+			
+			if(facingRight)
+				position.x = -xSpeed;
 			else
-				position.x = 0.25f;
-			
-			if(modelMatrix.m30() % 10 == 0)
-				animationCounter++;
-			if(animationCounter == animationTexture.length)
-				animationCounter = 0;
-			
+				position.x = -xSpeed;
+			}
+			System.out.println(facingRight);
 		}
 		
+		modelMatrix.translate(position);
 	}
 	
 	public static void createEnemy()
 	{
-		enemyList.add(new Enemy(r.nextInt(450), Ground.HEIGHT + 40));
+		Enemy e = new Enemy(r.nextInt(450), Ground.HEIGHT + 40);
+		if(e.modelMatrix.m30() > Player.modelMatrix.m30())
+		{
+			e.facingRight = false;
+			e.position.x = xSpeed;
+		}
+		else if(e.modelMatrix.m30() < Player.modelMatrix.m30())
+		{
+			e.facingRight = true;
+			e.position.x = xSpeed;
+			e.reflect();
+		}
+		enemyList.add(e);
 	}
 	
 	public static void render(Shader shader, Camera camera)
@@ -147,6 +166,7 @@ public class Enemy
 			modelMatrix.reflect(-1, 0, 0, 0);		
 		else if(facingRight == true)
 			modelMatrix.reflect(1, 0, 0, 0);		
+		
 	}
 
 }
