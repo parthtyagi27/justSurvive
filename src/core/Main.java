@@ -172,11 +172,57 @@ public class Main
 //		System.out.println(Player.modelMatrix.m30());
 		
 		for(int i = 0; i < Bullet.bulletList.size(); i++)
-			if(Bullet.bulletList.get(i).modelMatrix.m30() > 800 || Bullet.bulletList.get(i).modelMatrix.m30() < -1326)
-				Bullet.bulletList.remove(i);
-		
-		for(Enemy e : Enemy.enemyList)
-			e.update();
+		{
+			Bullet b = Bullet.bulletList.get(i);
+			for(Enemy e : Enemy.enemyList)
+			{
+//				if(b.modelMatrix.m30() >= e.modelMatrix.m30() && b.position.x > 0 && Player.facingRight)
+//				{
+//					e.health -= Bullet.bulletDamage;
+//					System.out.println("Enemy hit = " + e.health);
+//					Bullet.bulletList.remove(i);
+//				}
+//				
+//				if(b.modelMatrix.m30() <= e.modelMatrix.m30() + 40 && b.position.x < 0 && !Player.facingRight)
+//				{
+//					e.health -= Bullet.bulletDamage;
+//					System.out.println("Enemy hit = " + e.health);
+//					Bullet.bulletList.remove(i);
+//				}
+//				if(b.modelMatrix.m30() <= e.modelMatrix.m30() || b.modelMatrix.m30() >= e.modelMatrix.m30() + 40)
+//				{
+//					if(Player.facingRight && b.modelMatrix.m30() == e.modelMatrix.m30())
+//					{
+//						e.health -= Bullet.bulletDamage;
+//						System.out.println("Enemy hit = " + e.health);
+//						Bullet.bulletList.remove(i);
+//					}else if(!Player.facingRight && b.modelMatrix.m30() == e.modelMatrix.m30() + 40)
+//					{
+//						e.health -= Bullet.bulletDamage;
+//						System.out.println("Enemy hit = " + e.health);
+//						Bullet.bulletList.remove(i);
+//					}
+//				}
+				
+				if(b.modelMatrix.m30() < e.modelMatrix.m30() + 40 && b.modelMatrix.m30() + 3 > e.modelMatrix.m30())
+				{
+					e.health -= Bullet.bulletDamage;
+					System.out.println("Enemy hit = " + e.health);
+					Bullet.bulletList.remove(i);
+				}
+			}
+			
+//			if(Bullet.bulletList.get(i).modelMatrix.m30() > 800 || Bullet.bulletList.get(i).modelMatrix.m30() < -1326)
+//				Bullet.bulletList.remove(i);
+
+		}
+		for(int i = 0; i < Enemy.enemyList.size(); i++)
+		{
+			if(Enemy.enemyList.get(i).health <= 0)
+				Enemy.enemyList.remove(i);
+//			else
+//				Enemy.enemyList.get(i).update();
+		}
 		
 //		if(windowInput.isKeyDown(GLFW.GLFW_KEY_D))
 //		{
