@@ -7,7 +7,10 @@ public class Camera
 {
 	private Vector3f position;
 	private Matrix4f projection;
+
+	public static boolean cameraMoving = false;
 	
+	// 500 by 700 - dimensions
 	public Camera(int width, int height)
 	{
 		position = new Vector3f(0,0,0);
@@ -30,6 +33,12 @@ public class Camera
 		return position;
 	}
 	
+	public void translate(float x)
+	{
+		position.x = x;
+	}
+	
+
 	public Matrix4f getProjection()
 	{
 		Matrix4f target = new Matrix4f();
