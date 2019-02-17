@@ -19,6 +19,8 @@ public class Player
 	private Texture texture;
 	private Texture[] animationTexture;
 	
+	public static float health = 100;
+	
 	public static Vector3f position;
 	public static Matrix4f modelMatrix;
 	
@@ -86,6 +88,8 @@ public class Player
 	
 	public void update(Input input)
 	{
+		if(health > 0)
+		{
 //
 //		if(UnitManager.isMoving && (UnitManager.bg[0].getX() % 5 == 0 || UnitManager.bg[1].getX() % 5 == 0 || UnitManager.bg[2].getX() % 5 == 0))
 //		{
@@ -164,6 +168,7 @@ public class Player
 				if (Bullet.bulletList.get(Bullet.bulletList.size() - 1).getX() <= modelMatrix.m30() - (38 + Bullet.bulletDistance)|| Bullet.bulletList.get(Bullet.bulletList.size() - 1).position.x() >= 0.5f)
 					Bullet.createBullet();
 			}
+		}
 		}
 	}
 	

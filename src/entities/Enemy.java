@@ -22,8 +22,9 @@ public class Enemy
 	private Texture[] animationTexture;
 	private Vector3f position;
 	private Matrix4f modelMatrix;
+	public boolean isTouchingPlayer = false;
 	
-	private float health;
+	public float health;
 	private static final float xSpeed = 0.5f;
 	
 	
@@ -70,20 +71,8 @@ public class Enemy
 		modelMatrix = new Matrix4f().translate(x, y, 0).scale(4);
 		position = new Vector3f();
 		
-		health = 100;
+		health = 75;
 		
-		
-//		if(r.nextInt(2) == 0)
-//		{
-//			facingRight = true;
-//			reflect();
-////			modelMatrix.translate(0, Ground.HEIGHT + 40, 0).scale(4);
-//		}
-//		else
-//		{
-//			facingRight = false;
-////			modelMatrix.translate(Main.WIDTH, Ground.HEIGHT + 40, 0).scale(4);
-//		}
 	}
 
 	public void renderEnemy(Shader shader, Camera camera)
@@ -107,31 +96,34 @@ public class Enemy
 	{
 		if(health > 0)
 		{
-			if(modelMatrix.m30() == Player.modelMatrix.m30())
+			if(modelMatrix.m30() >= Player.modelMatrix.m30() && modelMatrix.m30() <= Player.modelMatrix.m30() + 40)
+			{
 				position.x = 0;
+				isTouchingPlayer = true;
+				return;
+			}
 			else 
 			{
-			if(modelMatrix.m30() > Player.modelMatrix.m30() && facingRight == true)
-			{
-				facingRight = false;
-				reflect();
-//				position.x = -xSpeed;
+				if(modelMatrix.m30() > Player.modelMatrix.m30() && facingRight == true)
+				{
+					facingRight = false;
+					reflect();
+	//				position.x = -xSpeed;
+				}
+				else if(modelMatrix.m30() < Player.modelMatrix.m30() && facingRight == false)
+				{
+					facingRight = true;
+					reflect();
+	//				position.x = xSpeed;
+				}
+				
+				if(facingRight)
+					position.x = -xSpeed;
+				else
+					position.x = -xSpeed;
+				
+				isTouchingPlayer = false;
 			}
-			else if(modelMatrix.m30() < Player.modelMatrix.m30() && facingRight == false)
-			{
-				facingRight = true;
-				reflect();
-//				position.x = xSpeed;
-			}
-			else if(modelMatrix.m30() == Player.modelMatrix.m30())
-				position.x = 0;
-			
-			if(facingRight)
-				position.x = -xSpeed;
-			else
-				position.x = -xSpeed;
-			}
-			System.out.println(facingRight);
 		}
 		
 		modelMatrix.translate(position);
@@ -140,7 +132,7 @@ public class Enemy
 	public static void createEnemy()
 	{
 		Enemy e = new Enemy(r.nextInt(450), Ground.HEIGHT + 40);
-		if(e.modelMatrix.m30() > Player.modelMatrix.m30())
+		if(e.modelMatrix.m30() > Player.modelMatrix.m30() - 40)
 		{
 			e.facingRight = false;
 			e.position.x = xSpeed;
