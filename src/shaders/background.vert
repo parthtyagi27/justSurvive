@@ -13,5 +13,5 @@ void main()
 {
 	textureCoordinates = textures;
 	gl_Position = projection * vec4(vertices, 1);
-//	gl_Position = projection * view * model * vec4(vertices,1);
+//	gl_Position = projection * model * vec4(vertices,1);
 }
