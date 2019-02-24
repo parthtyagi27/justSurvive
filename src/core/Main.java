@@ -15,7 +15,10 @@ import engine.Window;
 import entities.Bullet;
 import entities.Enemy;
 import entities.Player;
+import font.FontMesh;
+import font.Text;
 import world.Background;
+import world.Ground;
 import world.UnitManager;
 
 public class Main
@@ -27,6 +30,8 @@ public class Main
 	private static double time, unprocessedTime = 0;
 	private static double frameTime;
 	
+	public static final int maxEnemies = 5;
+	
 	private static Camera camera;
 	private static Background background;
 //	private static World world;
@@ -34,12 +39,17 @@ public class Main
 	
 	private static UnitManager uManager;
 	
+	private static Window window;
+	
+	private static FontMesh fm;
+	private static Text healthLabel;
+	
 	
 	public static void main(String[] args)
 	{
 		//Create Window Object and Display it
 		Window.setCallBack();
-		Window window = new Window(WIDTH, HEIGHT, "Just Survive GL");
+		window = new Window(WIDTH, HEIGHT, "Just Survive GL");
 		window.render();
 		windowInput = new Input(window);
 		
@@ -54,6 +64,7 @@ public class Main
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
+//		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 
@@ -98,8 +109,7 @@ public class Main
 					System.out.println("FPS: " + frames);
 					frames = 0;
 					perSecondUpdate();
-//					if(Enemy.enemyList.size() <= 3)
-//						Enemy.createEnemy();
+					
 				}
 			}
 			
@@ -107,6 +117,7 @@ public class Main
 			{
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 				GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+//				GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 				render();
 				int error = GL11.glGetError();
 				if(error != GL11.GL_NO_ERROR)
@@ -137,6 +148,11 @@ public class Main
 //		unit = new Unit(Shader.backgroundShader, Shader.groundShader, camera);
 		uManager = new UnitManager(Shader.groundShader, camera);
 		Enemy.createEnemy();
+
+		fm = new FontMesh("/res/font.ttf", 16);
+		healthLabel = new Text(fm);
+		healthLabel.loadText("Health = " + Player.health);
+		healthLabel.translate(WIDTH - healthLabel.getWidth() - 5, HEIGHT - healthLabel.getHeight() - 5, 0);
 	}
 	
 	private static void render()
@@ -145,8 +161,9 @@ public class Main
 //		world.render(Shader.groundShader, camera);
 		uManager.render();
 		player.render(Shader.playerShader, camera);
-		Bullet.render(Shader.bulletShader, camera);
 		Enemy.render(Shader.enemyShader, camera);
+		Bullet.render(Shader.bulletShader, camera);
+		healthLabel.render(Shader.textShader, camera);
 	}
 	
 	private static void perSecondUpdate()
@@ -158,6 +175,10 @@ public class Main
 		}
 		
 		System.out.println("Player Health = " + Player.health);
+		healthLabel.loadText("Health = " + Player.health);
+		
+		if(Enemy.enemyList.size() < maxEnemies)
+			Enemy.createEnemy();
 	}
 	
 	private static void update()
@@ -206,10 +227,17 @@ public class Main
 				
 				if(b.modelMatrix.m30() < e.modelMatrix.m30() + 40 && b.modelMatrix.m30() + 3 > e.modelMatrix.m30())
 				{
-					e.health -= Bullet.bulletDamage;
-					System.out.println("Enemy hit = " + e.health);
-					Bullet.bulletList.remove(i);
+					if(b.modelMatrix.m31() >= Ground.HEIGHT && b.modelMatrix.m31() <= Ground.HEIGHT + 40)
+					{
+						e.health -= Bullet.bulletDamage;
+//						System.out.println("Enemy hit = " + e.health);
+						Bullet.bulletList.remove(i);
+						break;
+					}
 				}
+				
+				if(b.modelMatrix.m30() <= - 500 || b.modelMatrix.m30() >= 1000)
+					Bullet.bulletList.remove(b);
 			}
 			
 //			if(Bullet.bulletList.get(i).modelMatrix.m30() > 800 || Bullet.bulletList.get(i).modelMatrix.m30() < -1326)
@@ -220,8 +248,8 @@ public class Main
 		{
 			if(Enemy.enemyList.get(i).health <= 0)
 				Enemy.enemyList.remove(i);
-//			else
-//				Enemy.enemyList.get(i).update();
+			else
+				Enemy.enemyList.get(i).update();
 		}
 		
 //		if(windowInput.isKeyDown(GLFW.GLFW_KEY_D))
