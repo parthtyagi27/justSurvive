@@ -6,11 +6,13 @@ import java.util.Random;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import core.Main;
 import engine.Camera;
 import engine.Model;
 import engine.Shader;
 import engine.Texture;
 import world.Ground;
+import world.UnitManager;
 
 public class Enemy
 {
@@ -31,6 +33,7 @@ public class Enemy
 	public boolean facingRight;
 	public int animationCounter = 0;
 	private static Random r = new Random();
+	private float deltaPositionX = 0;
 	
 	public Enemy(float x, float y)
 	{
@@ -73,6 +76,8 @@ public class Enemy
 		
 		health = 75;
 		
+		facingRight = r.nextBoolean();
+		
 	}
 
 	public void renderEnemy(Shader shader, Camera camera)
@@ -96,7 +101,7 @@ public class Enemy
 	{
 		if(health > 0)
 		{
-			if(modelMatrix.m30() >= Player.modelMatrix.m30() && modelMatrix.m30() <= Player.modelMatrix.m30() + 40)
+			if(modelMatrix.m30() + 50 >= Player.modelMatrix.m30() && modelMatrix.m30() <= Player.modelMatrix.m30() + 40)
 			{
 				position.x = 0;
 				isTouchingPlayer = true;
@@ -124,14 +129,44 @@ public class Enemy
 				
 				isTouchingPlayer = false;
 			}
+			
+			
+			
+			if(UnitManager.isMoving)
+			{
+				
+				if(Player.facingRight && facingRight)
+				{
+					position.x += xSpeed;
+				}else if(Player.facingRight && !facingRight)
+				{
+					position.x -= xSpeed;
+				}else if(!Player.facingRight && facingRight)
+					position.x -= xSpeed;
+				else if(!Player.facingRight && !facingRight)
+					position.x += xSpeed;
+				
+				
+			}
+			
 		}
-		
+		float initial = modelMatrix.m30();
 		modelMatrix.translate(position);
+		deltaPositionX += Math.abs(modelMatrix.m30() - initial);
+		if(deltaPositionX % 3 == 0)
+		{
+			animationCounter++;
+			deltaPositionX = 0;
+		}
 	}
 	
 	public static void createEnemy()
 	{
-		Enemy e = new Enemy(100, Ground.HEIGHT + 40);
+		Enemy e = new Enemy(0, Ground.HEIGHT + 40);
+		if(e.facingRight)
+			e.modelMatrix.m30(-40);
+		else if(!e.facingRight)
+			e.modelMatrix.m30(Main.WIDTH + 40);
 		if(e.modelMatrix.m30() > Player.modelMatrix.m30() - 40)
 		{
 			e.facingRight = false;
